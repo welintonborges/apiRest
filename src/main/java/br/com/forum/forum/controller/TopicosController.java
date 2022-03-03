@@ -7,7 +7,9 @@ import br.com.forum.forum.controller.form.TopicoForm;
 import br.com.forum.forum.model.Topico;
 import br.com.forum.forum.repository.CursoRepository;
 import br.com.forum.forum.repository.TopicoRepository;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +51,8 @@ public class TopicosController {
     }
 
     @PostMapping
+    @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriComponentsBuilder) {
         Topico topico = form.coverter(cursoRepository);
         topicoRepository.save(topico);
@@ -58,6 +62,8 @@ public class TopicosController {
     }
 
     @GetMapping("/{id}")
+    @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<Object> detalhe(@PathVariable Long id) {
         Optional<Topico> topico = topicoRepository.findById(id);
 
@@ -69,6 +75,7 @@ public class TopicosController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id,
                                                @RequestBody @Valid AtualizarTopicosForm form) {
         Optional<Topico> optional = topicoRepository.findById(id);
@@ -81,6 +88,8 @@ public class TopicosController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity remover(@PathVariable Long id) {
         Optional<Topico> optional = topicoRepository.findById(id);
         if (optional.isPresent()) {
