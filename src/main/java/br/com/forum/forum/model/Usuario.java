@@ -4,12 +4,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class Usuario  implements UserDetails {
+public class Usuario  implements UserDetails, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,15 +21,10 @@ public class Usuario  implements UserDetails {
     private String email;
     private String senha;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Perfil> perfis = new ArrayList<>();
 
-    public void setPerfis(List<Perfil> perfis) {
-        this.perfis = perfis;
-    }
-
-    public List<Perfil> getPerfis() {
-        return perfis;
+    public Usuario() {
     }
 
     @Override
